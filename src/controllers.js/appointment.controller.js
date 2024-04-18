@@ -18,16 +18,17 @@ export const createAppointment = async (req, res, next) => {
         }
 
         if (doctor.appointments.length > 0 && day && date && time) {
+            let done = false;
             doctor.appointments.forEach((appointment) => {
                 if (appointment === date + " " + day + " " + time) {
-                    return next(
-                        new AppError(
-                            400,
-                            "Cannot book as this time slot is already booked"
-                        )
-                    );
+                    done = true;
+                    return;
                 }
             });
+
+            if (done) {
+                return next(new AppError(400, "Time slot already booked"));
+            }
         }
 
         const appointment = await Appointment.create({
@@ -48,7 +49,7 @@ export const createAppointment = async (req, res, next) => {
         if (error.name === "ValidationError") {
             error.message = "Please check your input";
         }
-        // console.log(error);
+        console.log(error);
         return next(
             new AppError(
                 500,
