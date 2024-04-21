@@ -16,7 +16,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
-    res.send("Welcome to the doctor appointment API");
+    res.send(
+        "<h1 style='text-align:center'>Welcome to the doctor appointment API</h1>"
+    );
 });
 
 app.use("/api/v1/doctors", doctorRoutes);
