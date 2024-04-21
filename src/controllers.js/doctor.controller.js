@@ -78,23 +78,17 @@ export const checkAvailability = async (req, res, next) => {
         }
 
         if (doctor.appointments.length > 0 && day && date && time) {
+            let done = false;
             doctor.appointments.forEach((appointment) => {
-                if (
-                    appointment.day === day &&
-                    appointment.date.toString().split("T")[0] === date &&
-                    appointment.time === time
-                ) {
-                    return res
-                        .status(200)
-                        .json(
-                            new ApiResponse(
-                                200,
-                                "Doctor is not available",
-                                null
-                            )
-                        );
+                if (appointment === date + " " + day + " " + time) {
+                    done = true;
+                    return;
                 }
             });
+
+            if (done) {
+                return next(new AppError(400, "Time slot already booked"));
+            }
         }
 
         return res
